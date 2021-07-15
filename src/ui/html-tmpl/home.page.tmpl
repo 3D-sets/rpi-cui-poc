@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang='en'>
+    <head>
+        <meta charset='utf-8'>
+        <title>Home - 3DSets Control Unit Interface</title>
+        <link rel='stylesheet' href='/css/main.css'>
+        
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+        <script src="/js/main.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <header>
+            <h1>Control Unit Interface</h1>
+        </header>
+        <nav>
+            <a href="/">Home</a>
+        </nav>
+        <main>
+            <h2>List of active devices: </h2>
+            
+            <ul>
+                {{range .}}
+                    <li>{{.Id}}&nbsp;–&nbsp;{{.Desc}}
+                        <div class="state" id="{{.Id}}-state">
+                            LED turned ON: {{.State}}
+                        </div>
+                        <div class="toggle">
+                            <button id="{{.Id}}-button" name="{{.Id}}" type="submit" value="Toggle LED">Toggle LED</button>
+                        </div>
+                    </li>
+                {{end}}
+            </ul>
+
+        </main>
+        
+    </body>
+</html>
