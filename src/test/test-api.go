@@ -9,6 +9,9 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/googolgl/go-i2c"
+	"github.com/googolgl/go-pca9685"
 )
 
 var sleep chan bool
@@ -33,6 +36,33 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func servo() {
+	i2c, err := i2c.New(pca9685.Address, 1)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	pca0, err = pca9685.New(i2c, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Sets a single PWM channel 0
+	pca0.SetChannel(0, 0, 130)
+
+	// Servo on channel 0
+	servo0 := pca0.ServoNew(0, nil)
+
+	// Angle in degrees. Must be in the range `0` to `Range`
+	for i := 0; i < 130; i++ {
+		servo0.Angle(i)
+		time.Sleep(10 * time.Millisecond)
+	}
+
+	// Fraction as pulse width expressed between 0.0 `MinPulse` and 1.0 `MaxPulse`
+	servo0.Fraction(0.5)
+}
+
 func setAngle(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/servo" {
 		http.NotFound(w, r)
@@ -45,6 +75,8 @@ func setAngle(w http.ResponseWriter, r *http.Request) {
 		log.Println("Url Param 'angle' is missing")
 		return
 	}
+
+	servo()
 
 	fmt.Printf("New Angle Set: %s\n", keys[0])
 }
