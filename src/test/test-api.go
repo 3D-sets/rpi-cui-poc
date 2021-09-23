@@ -42,7 +42,7 @@ func servo() {
 		log.Fatal(err)
 	}
 
-	pca0, err = pca9685.New(i2c, nil)
+	pca0, err := pca9685.New(i2c, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
