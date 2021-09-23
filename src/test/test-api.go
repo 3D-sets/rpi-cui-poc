@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -14,6 +15,7 @@ import (
 	"github.com/googolgl/go-pca9685"
 )
 
+var servo pca9685.Servo
 var sleep chan bool
 
 func homePage(w http.ResponseWriter, r *http.Request) {
@@ -36,7 +38,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func servo() {
+func setupServo() *pca9685.Servo {
 	i2c, err := i2c.New(pca9685.Address, 1)
 	if err != nil {
 		log.Fatal(err)
@@ -53,14 +55,8 @@ func servo() {
 	// Servo on channel 0
 	servo0 := pca0.ServoNew(0, nil)
 
-	// Angle in degrees. Must be in the range `0` to `Range`
-	for i := 0; i < 130; i++ {
-		servo0.Angle(i)
-		time.Sleep(10 * time.Millisecond)
-	}
+	return servo0
 
-	// Fraction as pulse width expressed between 0.0 `MinPulse` and 1.0 `MaxPulse`
-	servo0.Fraction(0.5)
 }
 
 func setAngle(w http.ResponseWriter, r *http.Request) {
@@ -70,13 +66,13 @@ func setAngle(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("Endpoint Hit: setAngle")
 	keys, ok := r.URL.Query()["angle"]
+	angle, err := strconv.Atoi(keys[0])
 
 	if !ok || len(keys[0]) < 1 {
 		log.Println("Url Param 'angle' is missing")
 		return
 	}
-
-	servo()
+	servo.Angle(angle)
 
 	fmt.Printf("New Angle Set: %s\n", keys[0])
 }
@@ -90,6 +86,8 @@ func handleRequests() {
 func main() {
 	fileServer := http.FileServer(http.Dir("./ui"))
 	http.Handle("/", fileServer)
+
+	servo := setupServo()
 
 	// capture exit signals to ensure pin is reverted to input on exit.
 	quit := make(chan os.Signal, 1)
