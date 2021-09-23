@@ -84,6 +84,7 @@ func handleRequests() {
 func main() {
 	fileServer := http.FileServer(http.Dir("./ui"))
 	http.Handle("/", fileServer)
+	setupServo()
 
 	// capture exit signals to ensure pin is reverted to input on exit.
 	quit := make(chan os.Signal, 1)
