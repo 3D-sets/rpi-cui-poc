@@ -65,6 +65,7 @@ func setAngle(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Endpoint Hit: setAngle")
 	keys, ok := r.URL.Query()["angle"]
 	angle, _ := strconv.Atoi(keys[0])
+	angle += 45
 
 	if !ok || len(keys[0]) < 1 {
 		log.Println("Url Param 'angle' is missing")
