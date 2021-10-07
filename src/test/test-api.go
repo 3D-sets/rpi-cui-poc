@@ -86,7 +86,7 @@ func setSpeed(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println("Endpoint Hit: setSpeed")
-	keys, ok := r.URL.Query()["speed"]
+	keys, ok := r.URL.Query()["angle"]
 	speed, _ := strconv.Atoi(keys[0])
 
 	if !ok || len(keys[0]) < 1 {
