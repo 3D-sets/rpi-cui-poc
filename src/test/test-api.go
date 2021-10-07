@@ -101,6 +101,7 @@ func setSpeed(w http.ResponseWriter, r *http.Request) {
 func handleRequests() {
 	http.HandleFunc("/home", homePage)
 	http.HandleFunc("/servo", setAngle)
+	http.HandleFunc("/motor", setSpeed)
 	log.Fatal(http.ListenAndServe("0.0.0.0:10000", nil))
 }
 
