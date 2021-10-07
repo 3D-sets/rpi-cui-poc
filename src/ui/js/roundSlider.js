@@ -11,7 +11,7 @@ function setAngle() {
 }
 
 function setSpeed() {
-    var angle = $("#motor-slider").roundSlider("option", "value");
+    var speed = $("#motor-slider").roundSlider("option", "value");
     $.ajax({
         url: "motor",
         type: "get",
