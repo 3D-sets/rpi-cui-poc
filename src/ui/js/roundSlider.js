@@ -1,6 +1,6 @@
 
 function setAngle() {
-    var angle = $("#slider").roundSlider("option", "value");
+    var angle = $("#servo-slider").roundSlider("option", "value");
     $.ajax({
         url: "servo",
         type: "get",
@@ -10,8 +10,19 @@ function setAngle() {
     });
 }
 
+function setSpeed() {
+    var angle = $("#motor-slider").roundSlider("option", "value");
+    $.ajax({
+        url: "motor",
+        type: "get",
+        data: {
+            angle: speed
+        }
+    });
+}
+
 $(document).ready(function() {
-    $("#slider").roundSlider({
+    $("#servo-slider").roundSlider({
         radius: 360,
         circleShape: "custom-quarter",
         min: -45,
@@ -20,5 +31,15 @@ $(document).ready(function() {
         startAngle: "45",
         handleShape: "dot",
         update: "setAngle"
+    });
+    $("#motor-slider").roundSlider({
+        radius: 180,
+        circleShape: "custom-quarter",
+        min: -45,
+        max: 45,
+        value: 0,
+        startAngle: "135",
+        handleShape: "dot",
+        update: "setSpeed"
     }); 
 });

@@ -16,6 +16,7 @@ import (
 )
 
 var servo *pca9685.Servo
+var motor *pca9685.Servo
 var sleep chan bool
 
 func homePage(w http.ResponseWriter, r *http.Request) {
@@ -55,6 +56,9 @@ func setupServo() {
 	// Servo on channel 0
 	servo = pca0.ServoNew(0, nil)
 
+	pca0.SetChannel(1, 0, 130)
+	motor = pca0.ServoNew(1, nil)
+
 }
 
 func setAngle(w http.ResponseWriter, r *http.Request) {
@@ -74,6 +78,24 @@ func setAngle(w http.ResponseWriter, r *http.Request) {
 	servo.Angle(angle)
 
 	fmt.Printf("New Angle Set: %s\n", keys[0])
+}
+
+func setSpeed(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/motor" {
+		http.NotFound(w, r)
+		return
+	}
+	fmt.Println("Endpoint Hit: setSpeed")
+	keys, ok := r.URL.Query()["speed"]
+	speed, _ := strconv.Atoi(keys[0])
+
+	if !ok || len(keys[0]) < 1 {
+		log.Println("Url Param 'speed' is missing")
+		return
+	}
+	motor.Angle(speed)
+
+	fmt.Printf("New Speed Set: %s\n", keys[0])
 }
 
 func handleRequests() {
