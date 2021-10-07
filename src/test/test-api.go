@@ -110,6 +110,7 @@ func main() {
 	http.Handle("/", fileServer)
 	setupServo()
 	servo.Fraction(0.5)
+	motor.Fraction(0.5)
 
 	// capture exit signals to ensure pin is reverted to input on exit.
 	quit := make(chan os.Signal, 1)
